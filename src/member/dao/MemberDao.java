@@ -4,14 +4,16 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.util.Date;
 
 import jdbc.JdbcUtil;
+import jdbc.connection.ConnectionProvider;
 import member.model.Member;
 
 public class MemberDao {
+	
+	public MemberDao() {
 
+	}
 //	public Member selectById(Connection conn, String id) throws SQLException {
 //		PreparedStatement pstmt = null;
 //		ResultSet rs = null;
@@ -39,9 +41,30 @@ public class MemberDao {
 //			JdbcUtil.close(pstmt);
 //		}
 //	}
-
-
-
+	//<!-- _____________________________________________________________________________ -->
+	   public boolean duplicateIdCheck(String id) throws SQLException {
+		      Connection conn = null;
+		      PreparedStatement pstmt = null;
+		      ResultSet rs = null;
+		      boolean x = false;
+		    
+		      try{
+		    	 conn = ConnectionProvider.getConnection();
+		         pstmt = conn.prepareStatement("SELECT * from member WHERE member_id = ?");
+		         pstmt.setString(1,  id);
+		         rs = pstmt.executeQuery();
+		         
+		        
+		         if(rs.next()) x = true;
+		         
+		         return x;
+		      } finally {
+		         JdbcUtil.close(rs);
+		         JdbcUtil.close(pstmt);
+		         JdbcUtil.close(conn);
+		      }
+		   }
+//<!-- _____________________________________________________________________________ -->
 	public void insert(Connection conn, Member mem) throws SQLException {
 		try (PreparedStatement pstmt = 
 				conn.prepareStatement("insert into member values(?,?,?,?,?,?,?,?,?)")) {

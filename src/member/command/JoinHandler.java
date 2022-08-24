@@ -3,15 +3,13 @@ package member.command;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import member.service.DuplicateIdException;
 import member.service.JoinRequest;
 import member.service.JoinService;
 import mvc.command.CommandHandler;
 
 public class JoinHandler implements CommandHandler {
 
-	private static final String FORM_VIEW = "/WEB-INF/view/join.jsp";
+	private static final String FORM_VIEW = "/member/join.jsp";
 	private JoinService joinService = new JoinService();
 	
 	@Override
@@ -44,13 +42,9 @@ public class JoinHandler implements CommandHandler {
 		joinReq.setGender(req.getParameter("gender"));
 		joinReq.setEmail(req.getParameter("email"));
 		joinReq.setPhoneNumber(req.getParameter("phone"));
-	
-
-		
 			
 			joinService.join(joinReq);
 			return "/WEB-INF/view/joinSuccess.jsp";
 		
 	}
-
 }
