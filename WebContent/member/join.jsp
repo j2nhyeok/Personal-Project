@@ -60,7 +60,7 @@
         <option value="11">11</option>
         <option value="12">12</option>
       </select>
-       <input type="text" id="date" name="date"  maxlength="2" placeholder="일"  >
+       <input type="text" id="date" name="date"  maxlength="2" placeholder="일(01-31)"  >
       <br><br>
       성별<br>
       <label for="man">남성</label>
