@@ -2,11 +2,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>암호 변경</title>
+<title>탈퇴 완료</title>
 </head>
 <body>
 
-암호를 변경했습니다.
+탈퇴 완료 했습니다.
 <input type="button" value="창닫기 " onclick="window.close()"/>
 </body>
 </html>

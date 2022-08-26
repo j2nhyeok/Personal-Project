@@ -30,7 +30,7 @@
     <form name="login" action="join.do" method="post"  id="signform">
       아이디 <br>
       <input type="text" name="id" id="id" placeholder="영소문자로 시작하는 영소문자 또는 숫자 6~20자 " onkeydown="inputIdChk()" >
-      <input type="button" id="duplcheck" value="중복 확인">
+      <input type="button" id="dupleID" value="중복 확인">
       <input type="hidden" id="idDuplication" name="idDuplication" value="idUncheck">
        <div class="id regex"></div>
       <br>
@@ -47,15 +47,15 @@
       <input type="text" id="year" name="year" maxlength="4" placeholder="년(4자)"  >
       <select id = "month" name="month" style="width:50px; height:22px; font-size:12px;">
         <option value="" hidden>월</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
+        <option value="1">01</option>
+        <option value="2">02</option>
+        <option value="3">03</option>
+        <option value="4">04</option>
+        <option value="5">05</option>
+        <option value="6">06</option>
+        <option value="7">07</option>
+        <option value="8">08</option>
+        <option value="9">09</option>
         <option value="10">10</option>
         <option value="11">11</option>
         <option value="12">12</option>
@@ -70,8 +70,11 @@
       이메일<br><input type="text" name="email" id="email" placeholder="email@gmail.com"><br>
       <div class="email regex"></div><br>
       
-       전화번호 <br> <input type="text" name="phone" id="phone" placeholder=" '-' 없이 입력"><br>
+       전화번호 <br> <input type="text" name="phone" id="phone" placeholder=" '-' 없이 입력" onkeydown="inputPNChk()">
+          <input type="button" id="duplePhone" value="중복 확인">
+	      <input type="hidden" id="phoneDuplication" name="phoneDuplication" value="phoneUncheck">
         <div class="phone regex"></div>
+      
         
         <!-- 나중에 구현할 예정 -->    
 <!--       휴대전화<br>
@@ -97,11 +100,17 @@
         		document.login.idDuplication.value = "idUncheck";
         	}
         	
+        	// 폰번호 입력창에 다시 다른 전화번호를 입력시 hidden에 phoneUncheck를 세팅하여 중복확인을 하게 만든다.
+           //이렇게 하는 이유는 중복체크 후 다시 전화번호 창에 새로운 전화번호를 입력했을 때 다시 중복 체크를 하도록 하기  위해서이다.
+           function inputPNChk(){
+       			document.login.phoneDuplication.value = "phoneUncheck";
+      	 	}
+        	
 
            
     $(function(){
         // 중복확인 & id 유효성검사             
-        $("#duplcheck").on("click",function(){
+        $("#dupleID").on("click",function(){
             var id = $("#id").val();
             if(id == ""){
             	alert("아이디를 입력해주세요");
@@ -121,6 +130,30 @@
                  $(".id.regex").css("color","red")
              }
         })
+        
+        
+        	// 중복확인 & 전화번호 유효성검사    
+         $("#duplePhone").on("click",function(){
+            var phone = $("#phone").val();
+            if(phone == ""){
+            	alert("전화번호를 입력해주세요");
+            	return;
+            }
+            var regex = /^01\d\d{3,4}\d{4}$/;
+            var result = regex.exec($("#phone").val());
+        	var popupX = (window.screen.width/2) - (200 / 2);
+        	var popupY= (window.screen.height/2) - (300 / 2);			
+        	
+        	 if(result != null){
+        		 $(".phone.regex").html("");  
+                 
+            	 window.open("member/phoneCheckForm.jsp?phone="+phone, "", 'status=no, height=70px, width=400px, left='+ popupX + ', top='+ popupY + ', screenX='+ popupX + ', screenY= '+ popupY);
+             }else{
+            	 $(".phone.regex").html("올바른 번호 양식이 아닙니다");
+                 $(".id.regex").css("color","red")
+             }
+        })
+        
 
  
  
@@ -165,18 +198,7 @@
         
 
           
-        //전화번호 유효성검사
-             $("#phone").on("input",function(){
-                 var regex = /^01\d\d{3,4}\d{4}$/;
-                 var result = regex.exec($("#phone").val());
-                
-                if(result != null){
-                   $(".phone.regex").html("");  
-                }else{
-                    $(".phone.regex").html("올바른 번호가 아닙니다");
-                }
-                
-            }) 
+        
         
         //email유효성 검사
             $("#email").on("input",function(){
@@ -210,9 +232,15 @@
     	   var mmregex = /^\d{1,3}$/;
     	   var ddregex = /^(0[1-9]|[12][0-9]|3[0-1])$/;
     	  	
-    	   var dupleCheck = $("#idDuplication").val();
-    	   if(dupleCheck != "idCheck"){
+    	   var dupleID = $("#idDuplication").val();
+    	   if(dupleID != "idCheck"){
     		   alert("아이디 중복 확인을 해주세요.");
+    		   return;
+    	   }
+    	   
+    	   var duplePhone = $("#phoneDuplication").val();
+    	   if(duplePhone != "phoneCheck"){
+    		   alert("휴대전화 중복 확인을 해주세요.");
     		   return;
     	   }
     	  
