@@ -7,14 +7,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import auth.service.User;
-import member.service.ChangePasswordService;
 import member.service.InvalidPasswordException;
 import member.service.MemberNotFoundException;
+import member.service.SecessionService;
 import mvc.command.CommandHandler;
 
-public class ChangePasswordHandler implements CommandHandler {
-	private static final String FORM_VIEW = "/WEB-INF/view/changePwdForm.jsp";
-	private ChangePasswordService changePwdSvc = new ChangePasswordService();
+public class SecessionHandler implements CommandHandler {
+	private static final String FORM_VIEW = "/WEB-INF/view/secessionForm.jsp";
+	private SecessionService secessionSvc = new SecessionService();
 	
 	@Override
 	public String process(HttpServletRequest req, HttpServletResponse res) 
@@ -41,21 +41,18 @@ public class ChangePasswordHandler implements CommandHandler {
 		Map<String, Boolean> errors = new HashMap<>();
 		req.setAttribute("errors", errors);
 
-		String curPwd = req.getParameter("curPwd");
-		String newPwd = req.getParameter("newPwd");
+		String inputPwd = req.getParameter("curPwd");
 		
-		if (curPwd == null || curPwd.isEmpty()) {
+		if (inputPwd == null || inputPwd.isEmpty()) {
 			errors.put("curPwd", Boolean.TRUE);
 		}
-		if (curPwd == null || curPwd.isEmpty()) {
-			errors.put("newPwd", Boolean.TRUE);
-		}
+		
 		if (!errors.isEmpty()) {
 			return FORM_VIEW;
 		}
 		
 		try {
-			changePwdSvc.changePassword(user.getId(), curPwd, newPwd);
+			secessionSvc.secessionUser(user.getId(),user.getPassword(), inputPwd);
 			return "/WEB-INF/view/changePwdSuccess.jsp";
 		} catch (InvalidPasswordException e) {
 			errors.put("badCurPwd", Boolean.TRUE);

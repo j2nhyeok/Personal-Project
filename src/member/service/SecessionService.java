@@ -8,26 +8,23 @@ import jdbc.connection.ConnectionProvider;
 import member.dao.MemberDao;
 import member.model.Member;
 
-public class ChangePasswordService {
+public class SecessionService {
 
 	private MemberDao memberDao = new MemberDao();
 	
-	public void changePassword(String userId, String curPwd, String newPwd) {
+	public void secessionUser(String userId,String userPwd,  String inputPwd) {
 		Connection conn = null;
 		try {
 			conn = ConnectionProvider.getConnection();
 			conn.setAutoCommit(false);
 			
-			Member member = memberDao.selectById(conn, userId);
-			if (member == null) {
-				throw new MemberNotFoundException();
-			}
-			if (!member.matchPassword(curPwd)) {
+			
+			if(inputPwd.equals(userPwd)) {
+				memberDao.deleteUser(userId);
+				conn.commit();
+			}else {
 				throw new InvalidPasswordException();
 			}
-			member.changePassword(newPwd);
-			memberDao.update(conn, member);
-			conn.commit();
 		} catch (SQLException e) {
 			JdbcUtil.rollback(conn);
 			throw new RuntimeException(e);
