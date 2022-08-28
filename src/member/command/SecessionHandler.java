@@ -5,6 +5,7 @@ import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
 
 import auth.service.User;
 import member.service.InvalidPasswordException;
@@ -53,7 +54,11 @@ public class SecessionHandler implements CommandHandler {
 		
 		try {
 			secessionSvc.secessionUser(user.getId(),user.getPassword(), inputPwd);
-			return "/WEB-INF/view/changePwdSuccess.jsp";
+			HttpSession session = req.getSession(false);
+			if (session != null) {
+				session.invalidate();
+			}
+			return "/WEB-INF/view/SecessionSuccess.jsp";
 		} catch (InvalidPasswordException e) {
 			errors.put("badCurPwd", Boolean.TRUE);
 			return FORM_VIEW;

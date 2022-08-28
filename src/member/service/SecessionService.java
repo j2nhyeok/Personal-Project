@@ -20,6 +20,7 @@ public class SecessionService {
 			
 			
 			if(inputPwd.equals(userPwd)) {
+				
 				memberDao.deleteUser(userId);
 				conn.commit();
 			}else {

@@ -10,6 +10,7 @@ import auth.service.User;
 import member.service.ChangePasswordService;
 import member.service.InvalidPasswordException;
 import member.service.MemberNotFoundException;
+import member.service.notMatchRegexException;
 import mvc.command.CommandHandler;
 
 public class ChangePasswordHandler implements CommandHandler {
@@ -47,7 +48,7 @@ public class ChangePasswordHandler implements CommandHandler {
 		if (curPwd == null || curPwd.isEmpty()) {
 			errors.put("curPwd", Boolean.TRUE);
 		}
-		if (curPwd == null || curPwd.isEmpty()) {
+		if (newPwd == null || newPwd.isEmpty()) {
 			errors.put("newPwd", Boolean.TRUE);
 		}
 		if (!errors.isEmpty()) {
@@ -63,6 +64,9 @@ public class ChangePasswordHandler implements CommandHandler {
 		} catch (MemberNotFoundException e) {
 			res.sendError(HttpServletResponse.SC_BAD_REQUEST);
 			return null;
+		} catch (notMatchRegexException e) {
+			errors.put("notMatchNewPwd", Boolean.TRUE);
+			return FORM_VIEW;
 		}
 	}
 

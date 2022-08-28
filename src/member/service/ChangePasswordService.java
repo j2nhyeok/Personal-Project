@@ -2,6 +2,8 @@ package member.service;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import jdbc.JdbcUtil;
 import jdbc.connection.ConnectionProvider;
@@ -25,9 +27,18 @@ public class ChangePasswordService {
 			if (!member.matchPassword(curPwd)) {
 				throw new InvalidPasswordException();
 			}
+			
+			Pattern pattern = Pattern.compile("^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\\-_=+]).{8,16}$");
+			Matcher matcher = pattern.matcher(newPwd);
+			if(matcher.find()) {
 			member.changePassword(newPwd);
 			memberDao.update(conn, member);
 			conn.commit();
+			}
+			else { 
+				JdbcUtil.rollback(conn);
+				throw new notMatchRegexException();
+			}
 		} catch (SQLException e) {
 			JdbcUtil.rollback(conn);
 			throw new RuntimeException(e);

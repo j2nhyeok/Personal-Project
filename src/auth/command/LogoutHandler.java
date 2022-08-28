@@ -7,7 +7,6 @@ import javax.servlet.http.HttpSession;
 import mvc.command.CommandHandler;
 
 public class LogoutHandler implements CommandHandler {
-	private static final String FORM_VIEW = "/WEB-INF/view/logoutSuccess.jsp";
 	@Override
 	public String process(HttpServletRequest req, HttpServletResponse res) 
 	throws Exception {
@@ -15,7 +14,7 @@ public class LogoutHandler implements CommandHandler {
 		if (session != null) {
 			session.invalidate();
 		}
-		return FORM_VIEW;
+		return "";
 	}
 
 }

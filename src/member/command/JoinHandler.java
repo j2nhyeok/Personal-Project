@@ -29,9 +29,12 @@ public class JoinHandler implements CommandHandler {
 	}
 
 	private String processSubmit(HttpServletRequest req, HttpServletResponse res) {
-		//db에 넣어야 하는 작업을 여기서 해야 함.
+		//db�뿉 �꽔�뼱�빞 �븯�뒗 �옉�뾽�쓣 �뿬湲곗꽌 �빐�빞 �븿.
+		System.out.println(req.getParameter("year"));
+		System.out.println(req.getParameter("month"));
+		System.out.println(req.getParameter("date"));
 		
-		// 입력된 저옵를 joinReq로 옮김.
+		// �엯�젰�맂 ���샃瑜� joinReq濡� �삷源�.
 		JoinRequest joinReq = new JoinRequest();
 		joinReq.setId(req.getParameter("id"));
 		joinReq.setPw(req.getParameter("pw"));
