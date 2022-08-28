@@ -90,6 +90,26 @@ span1 {
 	right: 0;
 	padding-right: 20px;
 }
+
+.currentXY{
+
+position:absolute;
+  top:130;
+  left:540;
+  z-index:10;
+}
+
+.currentXYBtn{
+position:absolute;
+
+  top:130;
+  left:620;
+}
+
+img{
+	width: 30px;
+}
+
 </style>
 <script type="text/javascript">
 	function openNav() {
@@ -110,7 +130,11 @@ span1 {
 
 <body1 class="choice"> 
 
-<input type="button" value="현위치 보기"id="currentBtn" onclick="panTo()"> 
+	<div class="currentXY"> 
+	<button type="button" class="currentXYBtn" onclick="panTo()"><img src="../../images/currentXY.png" alt=""></button>
+<!-------------------------------------------------------------------------------------------------------------------------------->		
+		
+	</div>
 <input type="button" value="러닝 번개 만들기" id="makeBtn" onclick="makeRun()">
 <div id="mySidenav" class="sidenav">
 
@@ -121,13 +145,10 @@ span1 {
 	</h2>
 	<a href="logout.do" onclick="window.close()">로그아웃</a>
 	<!--  <a href="../MainMenu/UserChange.jsp">회원정보수정</a> -->
-	<a href="changePwd.do"
-		onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">비밀번호변경</a>
-	<a href="secession.do"
-		onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">회원탈퇴</a>
+	<a href="changePwd.do" onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">비밀번호변경</a>
+	<a href="secession.do" onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">회원탈퇴</a>
 </div>
-<span1 style="font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
-menu</span1> </body1>
+<span1 style="font-size:20px;cursor:pointer" onclick="openNav()">&#9776; menu</span1> </body1>
 <br>
 <br>
 <span id="menu"><span class="ion-navicon-round">

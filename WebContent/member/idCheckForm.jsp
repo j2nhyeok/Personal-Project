@@ -42,7 +42,7 @@
 		// 사용하기 클릭 시 부모창으로 값 전달
 		 function sendCheckValue(){
 		// 중복체크 결과인 idCheck 값을 전달한다.
-			    opener.document.login.idDuplication.value ="idCheck";
+			    opener.document.join.idDuplication.value ="idCheck";
 		// 창닫기 
 			  window.close();
 		} 

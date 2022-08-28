@@ -1,6 +1,9 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
-
+<%@page import="auth.service.User"%>
+<%
+	User user = (User) request.getSession().getAttribute("authUser");
+%>
 <script language=javascript>
 	moveTo(200, 120)
 </script>
@@ -16,7 +19,7 @@ body {
 	background-color: black;
 }
 
-div#createRun{
+#makeform{
 	position:absolute;
 	background-color: white;
 	margin: -760px 0 0  1200px;
@@ -32,20 +35,28 @@ position:absolute;
   z-index:10;
 }
 
+.lightMeet_time{ /* 시간을 입력받는 input칸 크기 조절 */
+	width: 60px;
+	height: 20px;
+}
+
+.lightMeet_limitAge{
+	width: 40px;
+	height: 20px;
+}
 .currentXYBtn{
 position:absolute;
 
   top:130;
   left:620;
 }
-
+/* 
 .makeBtn{
 position:absolute;
-  top:700;
-  left:110;
-	width: 100px;
-	height: 30px;
-}
+   top:100;
+  left:510;
+
+} */
 
 
 
@@ -115,27 +126,59 @@ img{
 </style>
 </head>
 <body onresize="parent.resizeTo(1536, 852)" onload="parent.resizeTo(1536, 852)">
+
 	<div id="map" style="width: 80%; height: 750px;"></div>
-
-	<div class="currentXY">
+	
+<!-------------------------------현위치 버튼 생성---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  -->
+	<div class="currentXY"> 
 	<button type="button" class="currentXYBtn" onclick="panTo()"><img src="../../images/currentXY.png" alt=""></button>
-		
+<!-------------------------------------------------------------------------------------------------------------------------------->		
 		
 	</div>
 	
-	<div id="createRun">
-		
-		
-			<input type="button" class="makeBtn" value="생성하기">
-		
+	<form name="make"  id="makeform" >
+		<fieldset>
+		<legend>러닝 번개 생성하기</legend>
+	   	    번개장 : <%=user.getName() %> 
+	   	<br>
+   		    모집 인원 : <input type="number" class="lightMeet_capacity" name="lightMeet_capacity" placeholder="최소인원 2(명)" min="02" required>명
+   		<br>
+   		    모임 시간 : <select id = "lightMeet_Date" name="lightMeet_Date" style="width:60px; height:22px; font-size:12px; ">
+      			  <option value="오늘">오늘</option>
+      			  <option value="내일">내일</option>
+     			  </select>
+     			   <input type="time" id='time'/>
+     			   
+     			<input type="hidden" name="ampm" id="ampm" value="">
+      			<input type="hidden"  name="hour" id="hour" value="">
+      			<input type="hidden"  name="minute" id="minute" value="">
+      
+   		<br>
+   		  모집 성별 :  <select id = "lightMeet_gender" name="lightMeet_gender" style="width:70px; height:22px; font-size:12px; ">
+      			  <option value="제한없음">제한없음</option>
+      			  <option value="남성만">남성만</option>
+     			  <option value="여성만">여성만</option>
+     			  </select>
+   		<br>
+   		    러닝 키로수 :  <span id="lightMeet_km"></span> 	km 
+   		<br>
+   		     나이 제한 : <input type="number" class="lightMeet_limitAge" name="lightMeet_startAge" placeholder="" min="00" max="100" required>세부터
+   		  		<input type="number" class="lightMeet_limitAge" name="lightMeet_endAge" placeholder="" min="00" max="100" required>세까지		
+		    
 	
-	</div>
+			<input type="button" id="cancleBtn" value="취소하기" onclick="window.close()"> 
+			<input type="button" id="makeBtn" value="생성하기"> 
+		</fieldset>
+	</form>
 
-
+<!-------------------------------카카오 맵 생성---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  -->
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08fa980140200e6f083039f1504a1fad"></script>
 	<script>
 		
+		
+	
+
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
 		mapOption = {
 			center : new kakao.maps.LatLng(33.450701, 126.570667), // 지도의 중심좌표
@@ -144,7 +187,7 @@ img{
 		};
 
 		var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-
+<!------------------------------맵에 선긋는 코드---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  -->
 		var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
 		var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
 		var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
@@ -386,7 +429,6 @@ img{
 		// 그려진 선의 총거리 정보와 거리에 대한 도보, 자전거 시간을 계산하여
 		// HTML Content를 만들어 리턴하는 함수입니다
 		function getTimeHTML(distance) {
-			window.alert(distance);
 			// 도보의 시속은 평균 4km/h 이고 도보의 분속은 67m/min입니다
 			var walkkTime = distance / 67 | 0;
 			var walkHour = '', walkMin = '';
@@ -414,7 +456,9 @@ img{
 			var content = '<ul class="dotOverlay distanceInfo">';
 			content += '    <li>';
 			content += '        <span class="label">총거리</span><span class="number">'
-					+ distance + '</span>m';
+					+ distance/1000 + '</span>km';
+			// 러닝 km칸에 km수 표시		
+			document.getElementById("lightMeet_km").innerHTML = distance/1000;
 			content += '    </li>';
 			content += '    <li>';
 			content += '        <span class="label">도보</span>' + walkHour
@@ -429,7 +473,7 @@ img{
 			return content;
 		}
 		
-		
+<!---------------------------접속하면 내 위치를 지도 중심으로--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->		
 			var locPosition = null;
 			//HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
 			if (navigator.geolocation) {
@@ -483,7 +527,7 @@ img{
 			    map.panTo(moveLatLon);            
 			}
 		
-		
+<!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->				
 		//일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
 		var mapTypeControl = new kakao.maps.MapTypeControl();
 
@@ -494,35 +538,23 @@ img{
 		// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
 		var zoomControl = new kakao.maps.ZoomControl();
 		map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
-		
-		// 지도를 클릭한 위치에 표출할 마커입니다
-		var marker = new kakao.maps.Marker({ 
-		    // 지도 중심좌표에 마커를 생성합니다 
-		    position: map.getCenter() 
-		}); 
-		// 지도에 마커를 표시합니다
-		marker.setMap(map);
 
-		// 지도에 클릭 이벤트를 등록합니다
-		// 지도를 클릭하면 마지막 파라미터로 넘어온 함수를 호출합니다
-		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {        
-		    
-		    // 클릭한 위도, 경도 정보를 가져옵니다 
-		    var latlng = mouseEvent.latLng; 
-		    
-		    // 마커 위치를 클릭한 위치로 옮깁니다
-		    marker.setPosition(latlng);
-		    
-		    var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-		    message += '경도는 ' + latlng.getLng() + ' 입니다';
-		    
-		    var resultDiv = document.getElementById('clickLatlng'); 
-		    resultDiv.innerHTML = message;
-		    
-		});
+<!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->						
 		
+$(".makeBtn").on("click",function(){
+	
+	window.close();
+/* 	window.alert($("#time").val());
+document.make.ampm.value = $("#time").val().slice(0, 4);
+ document.make.hour.value= $("#time").val().slice(5, 7);
+ document.make.month.value = $("#time").val().slice(8);   
+ */
+//빈칸 없을 때 제출.
+/*  $("#signform").submit(); */
+
+})
 	</script>
-
+<!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
 
 
 

@@ -1,5 +1,8 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.time.LocalDate" %>
+
+<% LocalDate now = LocalDate.now();  %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -27,7 +30,7 @@
   
   <div id="wrapper">
   <section>
-    <form name="login" action="join.do" method="post"  id="signform">
+    <form name="join" action="join.do" method="post"  id="signform">
       아이디 <br>
       <input type="text" name="id" id="id" placeholder="영소문자로 시작하는 영소문자 또는 숫자 6~20자 " onkeydown="inputIdChk()" >
       <input type="button" id="dupleID" value="중복 확인">
@@ -43,24 +46,16 @@
       <br><br>
       이름<br>  <input type="text" name="name" id="name"> <br>
       <div class="name regex"></div>
-      생년월일<br> 
-      <input type="text" id="year" name="year" maxlength="4" placeholder="년(4자)"  >
-      <select id = "month" name="month" style="width:50px; height:22px; font-size:12px;">
-        <option value="" hidden>월</option>
-        <option value="1">01</option>
-        <option value="2">02</option>
-        <option value="3">03</option>
-        <option value="4">04</option>
-        <option value="5">05</option>
-        <option value="6">06</option>
-        <option value="7">07</option>
-        <option value="8">08</option>
-        <option value="9">09</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-      </select>
-       <input type="text" id="date" name="date"  maxlength="2" placeholder="일(01-31)"  >
+    
+       <label for="start">생년월일:</label>
+
+	  <input type="date" id="birthday" name="birthday" value="년도-월-일"  min="1900-01-01" max=<%=now%> required>
+       
+      <input type="hidden" name="year" id="year" value="">
+      <input type="hidden"  name="month" id="month" value="">
+      <input type="hidden"  name="date" id="date" value="">
+       
+       
       <br><br>
       성별<br>
       <label for="man">남성</label>
@@ -93,17 +88,23 @@
 		</div>
     </form>
    
+    
     <script>
+    
+ 	
+   		
+   
+    
         	// 아이디 입력창에 다시 다른 아이디를 입력시 hidden에 idUncheck를 세팅하여 중복확인을 하게 만든다.
            //이렇게 하는 이유는 중복체크 후 다시 아이디 창이 새로운 아이디를 입력했을 때 다시 중복 체크를 하도록 하기  위해서이다.
            function inputIdChk(){
-        		document.login.idDuplication.value = "idUncheck";
+        		document.join.idDuplication.value = "idUncheck";
         	}
         	
         	// 폰번호 입력창에 다시 다른 전화번호를 입력시 hidden에 phoneUncheck를 세팅하여 중복확인을 하게 만든다.
            //이렇게 하는 이유는 중복체크 후 다시 전화번호 창에 새로운 전화번호를 입력했을 때 다시 중복 체크를 하도록 하기  위해서이다.
            function inputPNChk(){
-       			document.login.phoneDuplication.value = "phoneUncheck";
+       			document.join.phoneDuplication.value = "phoneUncheck";
       	 	}
         	
 
@@ -214,23 +215,23 @@
       //회원가입 버튼 눌렀을 때, 빈칸 있으면 다시 유효성 검사진행    
        $("#signupbtn").on("click",function(){
     	
+    	 	  document.join.year.value = $("#birthday").val().slice(0, 4);
+     		 document.join.month.value= $("#birthday").val().slice(5, 7);
+     		 document.join.date.value = $("#birthday").val().slice(8);   
+    	   
     	   var id = $("#id").val();
     	   var pw = $("#pw").val();
     	   var name = $("#name").val();
     	   var phone = $("#phone").val();
     	   var email = $("#email").val();
-    	   var yy =  $("#year").val();
-    	   var mm = $("#month").val();
-    	   var dd = $("#date").val();
+    	  
+
     	   
     	   var idregex = /^[a-z]+[a-z0-9]{5,19}$/g;
     	   var pwregex =  /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/;
     	   var nameregex = /[가-힣]{2,}/;
     	   var phoneregex = /^01\d\d{3,4}\d{4}$/;
     	   var emailregex = /.+@[a-z]+(\.[a-z]+){1,2}$/;
-    	   var yyregex = /^\d{4}$/;
-    	   var mmregex = /^\d{1,3}$/;
-    	   var ddregex = /^(0[1-9]|[12][0-9]|3[0-1])$/;
     	  	
     	   var dupleID = $("#idDuplication").val();
     	   if(dupleID != "idCheck"){
@@ -272,24 +273,7 @@
     		   alert("이메일양식을 다시 확인해주세요");
     		   retrun;
     	   }
-    	   
-           var yyregex = yyregex.exec(yy); 
-           if(yyregex == null){
-    		   alert("생'년'월일 양식을 다시 확인해주세요");
-    		   retrun;
-    	   }   
-   
-           var mmregex = mmregex.exec(mm); 
-           if(mmregex == null){
-    		   alert("생년'월'일 양식을 다시 확인해주세요");
-    		   retrun;
-    	   }
-    	 
-    	   var ddregex = ddregex.exec(dd); 
-           if(ddregex == null){
-    		   alert(" 생년월'일' 양식을 다시 확인해주세요");
-    		   retrun;
-    	   }                    
+    
 			
              //빈칸 없을 때 제출.
     	   $("#signform").submit();

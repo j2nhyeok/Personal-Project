@@ -2,11 +2,22 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>암호 변경</title>
+<title>비밀번호 변경</title>
+
+<style>
+	body{
+		text-align: center;
+	}
+	
+</style>
 </head>
 <body>
 
-암호를 변경했습니다.
+<fieldset>
+		<legend>비밀번호 변경완료</legend>
+비밀번호를 변경했습니다. <br>
+
 <input type="button" value="창닫기 " onclick="window.close()"/>
+</fieldset>
 </body>
 </html>

@@ -44,9 +44,11 @@
 		// 사용하기 클릭 시 부모창으로 값 전달
 		 function sendCheckValue(){
 		// 중복체크 결과인 idCheck 값을 전달한다.
-			    opener.document.login.phoneDuplication.value ="phoneCheck";
+			    opener.document.join.phoneDuplication.value ="phoneCheck";
+				console.log('여기까지는 잘 되었나요?');
 		// 창닫기 
 			  window.close();
+			console.log(' 그럼 여기까지는 잘 되었나요?');
 		} 
 </script>
 </head>

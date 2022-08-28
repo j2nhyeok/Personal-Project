@@ -12,8 +12,8 @@
 		<legend>로그인</legend>
 		
 		<form action="login.do" method="post">
-			아이디 : <input type="text" name="id"> <br>
-			비밀번호 : <input type="password" name="password">
+			아이디 : <input type="text" name="id" required> <br>
+			비밀번호 : <input type="password" name="password" required>
 			<input type="submit" value="로그인"> <br>
 			
 			<br>
