@@ -1,5 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
+<%@ page import="java.time.LocalDate;" %>
+<%LocalDate now = LocalDate.now(); %>
 <!DOCTYPE html>
 <html>
 <head>
@@ -41,23 +43,11 @@
       이름<br>  <input type="text" name="name" id="name"> <br>
       <div class="name regex"></div>
       생년월일<br> 
-      <input type="text" class="year" name="year" maxlength="4" placeholder="년(4자)"  >
-      <select name="month" style="width:50px; height:22px; font-size:12px;">
-        <option value="">월</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="5">5</option>
-        <option value="6">6</option>
-        <option value="7">7</option>
-        <option value="8">8</option>
-        <option value="9">9</option>
-        <option value="10">10</option>
-        <option value="11">11</option>
-        <option value="12">12</option>
-      </select>
-       <input type="text" class="date" name="date"  maxlength="2" placeholder="일"  >
+    	<input type="date" id="birthday" name="birthday" value="년도-월-일" min="1900-01-01" max=<%=now%> required>
+    	<input type="hidden" id="year" name="year" value="">
+    	<input type="hidden" id="month" name="month" value="">
+    	<input type="hidden" id="date" name="date" value="">
+    	
       <br><br>
       성별<br>
       <label for="man">남성</label>
@@ -169,6 +159,11 @@
             })
       //회원가입 버튼 눌렀을 때, 빈칸 있으면 다시 유효성 검사진행    
        $("#signupbtn").on("click",function(){
+    	   
+    	   document.join.year.value=$("#birthday").val().slice(0,4);
+    	   document.join.month.value=$("#birthday").val().slice(5,7);
+    	   document.join.date.value=$("birthday").val().slice(8);
+    	   
     	   var id = $("#id").val();
     	   var pw = $("#pw").val();
     	   var name = $("#name").val();

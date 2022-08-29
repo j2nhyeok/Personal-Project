@@ -12,7 +12,8 @@
 <html>
 <head>
 <meta charset="utf-8">
-<title>선의 거리 계산하기</title>
+ <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+<title>러닝 번개 생성</title>
 <style>
 
 body {
@@ -40,10 +41,16 @@ position:absolute;
 	height: 20px;
 }
 
-.lightMeet_limitAge{
+#lightMeet_startAge{
 	width: 40px;
 	height: 20px;
 }
+
+#lightMeet_endAge{
+	width: 40px;
+	height: 20px;
+}
+
 .currentXYBtn{
 position:absolute;
 
@@ -57,7 +64,6 @@ position:absolute;
   left:510;
 
 } */
-
 
 
 img{
@@ -125,6 +131,7 @@ img{
 }
 </style>
 </head>
+
 <body onresize="parent.resizeTo(1536, 852)" onload="parent.resizeTo(1536, 852)">
 
 	<div id="map" style="width: 80%; height: 750px;"></div>
@@ -141,33 +148,34 @@ img{
 		<legend>러닝 번개 생성하기</legend>
 	   	    번개장 : <%=user.getName() %> 
 	   	<br>
-   		    모집 인원 : <input type="number" class="lightMeet_capacity" name="lightMeet_capacity" placeholder="최소인원 2(명)" min="02" required>명
+   		    모집 인원 : <input type="number" id="lightMeet_capacity" name="lightMeet_capacity" placeholder="최소인원 2(명)" min="02" >명
    		<br>
    		    모임 시간 : <select id = "lightMeet_Date" name="lightMeet_Date" style="width:60px; height:22px; font-size:12px; ">
-      			  <option value="오늘">오늘</option>
-      			  <option value="내일">내일</option>
-     			  </select>
-     			   <input type="time" id='time'/>
+      			 	  <option value="오늘">오늘</option>
+      				  <option value="내일">내일</option>
+     			   </select>
+     			   <input type="time" id="whatTime" name="whatTime"/>
      			   
-     			<input type="hidden" name="ampm" id="ampm" value="">
-      			<input type="hidden"  name="hour" id="hour" value="">
-      			<input type="hidden"  name="minute" id="minute" value="">
+      			   <input type="hidden"  name="hour" id="lightMeet_hour" value="">
+      			   <input type="hidden"  name="minute" id="lightMeet_minute" value="">
       
    		<br>
    		  모집 성별 :  <select id = "lightMeet_gender" name="lightMeet_gender" style="width:70px; height:22px; font-size:12px; ">
-      			  <option value="제한없음">제한없음</option>
-      			  <option value="남성만">남성만</option>
-     			  <option value="여성만">여성만</option>
-     			  </select>
+      			  	   <option value="제한없음">제한없음</option>	
+      			  	   <option value="남성">남성</option>
+     			       <option value="여성">여성</option>
+     		   	   </select>
    		<br>
-   		    러닝 키로수 :  <span id="lightMeet_km"></span> 	km 
+   		    러닝 키로수 :  <input type="text" id="lightMeet_km" readonly style="width:70px; height:22px; font-size:12px; "/>km   X   
+   		    		  <input type="number" id="turn" name="turn" value="1" style="width:40px; height:22px; font-size:12px;"  min="1" max="100"  />바퀴  <br>
+
    		<br>
-   		     나이 제한 : <input type="number" class="lightMeet_limitAge" name="lightMeet_startAge" placeholder="" min="00" max="100" required>세부터
-   		  		<input type="number" class="lightMeet_limitAge" name="lightMeet_endAge" placeholder="" min="00" max="100" required>세까지		
+   		       나이 제한 :  <input type="number" id="lightMeet_startAge" name="lightMeet_startAge" placeholder="0" min="00" max="99" >세부터
+   		  		      <input type="number" id="lightMeet_endAge" name="lightMeet_endAge" placeholder="99" min="00" max="99" >세까지		
 		    
 	
 			<input type="button" id="cancleBtn" value="취소하기" onclick="window.close()"> 
-			<input type="button" id="makeBtn" value="생성하기"> 
+			<input type="button" id="makeBtn" value="생성하기" onclick="makeFunc()"> 
 		</fieldset>
 	</form>
 
@@ -175,8 +183,6 @@ img{
 	<script type="text/javascript"
 		src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08fa980140200e6f083039f1504a1fad"></script>
 	<script>
-		
-		
 	
 
 		var mapContainer = document.getElementById('map'), // 지도를 표시할 div  
@@ -187,7 +193,7 @@ img{
 		};
 
 		var map = new kakao.maps.Map(mapContainer, mapOption); // 지도를 생성합니다
-<!------------------------------맵에 선긋는 코드---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------  -->
+
 		var drawingFlag = false; // 선이 그려지고 있는 상태를 가지고 있을 변수입니다
 		var moveLine; // 선이 그려지고 있을때 마우스 움직임에 따라 그려질 선 객체 입니다
 		var clickLine // 마우스로 클릭한 좌표로 그려질 선 객체입니다
@@ -196,11 +202,12 @@ img{
 
 		// 지도에 클릭 이벤트를 등록합니다
 		// 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
+			let arr = []; // 위도와 경도를 저장할 그런 그런 배열
 		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
-
 			// 마우스로 클릭한 위치입니다 
 			var clickPosition = mouseEvent.latLng;
-
+			arr.push(mouseEvent.latLng);
+			console.log(arr);
 			// 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
 			if (!drawingFlag) {
 
@@ -289,7 +296,9 @@ img{
 		// 지도에 마우스 오른쪽 클릭 이벤트를 등록합니다
 		// 선을 그리고있는 상태에서 마우스 오른쪽 클릭 이벤트가 발생하면 선 그리기를 종료합니다
 		kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
-
+			let deepArr = JSON.parse(JSON.stringify(arr));
+			arr.length=0;
+			console.log(deepArr);
 			// 지도 오른쪽 클릭 이벤트가 발생했는데 선을 그리고있는 상태이면
 			if (drawingFlag) {
 
@@ -458,7 +467,7 @@ img{
 			content += '        <span class="label">총거리</span><span class="number">'
 					+ distance/1000 + '</span>km';
 			// 러닝 km칸에 km수 표시		
-			document.getElementById("lightMeet_km").innerHTML = distance/1000;
+			document.getElementById("lightMeet_km").value = distance/1000;
 			content += '    </li>';
 			content += '    <li>';
 			content += '        <span class="label">도보</span>' + walkHour
@@ -473,7 +482,6 @@ img{
 			return content;
 		}
 		
-<!---------------------------접속하면 내 위치를 지도 중심으로--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->		
 			var locPosition = null;
 			//HTML5의 geolocation으로 사용할 수 있는지 확인합니다 
 			if (navigator.geolocation) {
@@ -541,22 +549,48 @@ img{
 
 <!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->						
 		
-$(".makeBtn").on("click",function(){
-	
-	window.close();
-/* 	window.alert($("#time").val());
-document.make.ampm.value = $("#time").val().slice(0, 4);
- document.make.hour.value= $("#time").val().slice(5, 7);
- document.make.month.value = $("#time").val().slice(8);   
- */
-//빈칸 없을 때 제출.
-/*  $("#signform").submit(); */
-
-})
+		function makeFunc(){
+			var lightMeet_capacity =  parseInt($("#lightMeet_capacity").val());
+			var whatTime =  $("#whatTime").val();
+			var lightMeet_km =  parseFloat($("#lightMeet_km").val());
+			var lightMeet_startAge =  parseInt($("#lightMeet_startAge").val());
+			var lightMeet_endAge =  parseInt($("#lightMeet_endAge").val());
+			
+			
+			if(lightMeet_capacity == "" || lightMeet_capacity < 2){
+	    		   alert("모집인원을 다시 확인해주세요 (최소 2명 이상)");
+	    		   return;
+	    	}
+			
+			if(whatTime == "" ){
+				   alert("모임시간을 선택해주세요.");
+	    		   return;
+	    	}
+			
+			if(lightMeet_km == "" ){
+					alert("러닝 km를  다시 확인해주세요.");
+	    		   return;
+	    	}
+			
+			if(lightMeet_startAge == "" || lightMeet_startAge < 0){
+	    		   alert("참가 가능한 최소 나이를 다시 확인해주세요.");
+	    		   return;
+	    	}
+			
+			if(lightMeet_endAge == "" || lightMeet_endAge > 100 || lightMeet_endAge < lightMeet_startAge){
+					console.log(lightMeet_startAge);
+					console.log(lightMeet_endAge);
+	    		   alert("참가 가능한 최대 나이를 다시 확인해주세요.");
+	    		   return;
+	    	}
+			
+			
+			
+			document.make.hour.value = $("#whatTime").val().slice(0, 2);
+			document.make.minute.value = $("#whatTime").val().slice(3);
+			window.open("makeRunCheck.jsp", "_blank", "width=500, height=250, left=800, top=200");
+		}
 	</script>
 <!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
-
-
-
 </body>
 </html>
