@@ -202,18 +202,25 @@ img{
 
 		// 지도에 클릭 이벤트를 등록합니다
 		// 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
-			let arr = []; // 위도와 경도를 저장할 그런 그런 배열
+			let latitude = []; // 위도를 저장할 배열
+			let longitude = []; // 경도를 저장할 배열
 		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
 			// 마우스로 클릭한 위치입니다 
 			var clickPosition = mouseEvent.latLng;
-			arr.push(mouseEvent.latLng);
-			console.log(arr);
+			
+				
+		
+			
 			// 지도 클릭이벤트가 발생했는데 선을 그리고있는 상태가 아니면
 			if (!drawingFlag) {
-
+				latitude.length=0; //다시 경로를 설정함으로 위도 배열 초기화
+				longitude.length=0; //다시 경로를 설정함으로 경도 배열 초기화
 				// 상태를 true로, 선이 그리고있는 상태로 변경합니다
 				drawingFlag = true;
-
+				latitude.push(mouseEvent.latLng.getLat());
+				longitude.push(mouseEvent.latLng.getLng());		
+				console.log(latitude);
+				console.log(longitude);
 				// 지도 위에 선이 표시되고 있다면 지도에서 제거합니다
 				deleteClickLine();
 
@@ -245,7 +252,10 @@ img{
 				displayCircleDot(clickPosition, 0);
 
 			} else { // 선이 그려지고 있는 상태이면
-
+				latitude.push(mouseEvent.latLng.getLat());
+				longitude.push(mouseEvent.latLng.getLng());		
+				console.log(latitude);
+				console.log(longitude);
 				// 그려지고 있는 선의 좌표 배열을 얻어옵니다
 				var path = clickLine.getPath();
 
@@ -287,7 +297,7 @@ img{
 										+ moveLine.getLength()), // 선의 총 거리를 계산합니다
 								content = '<div class="dotOverlay distanceInfo">총거리 <span class="number">'
 										+ distance + '</span>m</div>'; // 커스텀오버레이에 추가될 내용입니다
-
+								document.getElementById("lightMeet_km").value = distance/1000;
 								// 거리정보를 지도에 표시합니다
 								showDistance(content, mousePosition);
 							}
@@ -296,9 +306,9 @@ img{
 		// 지도에 마우스 오른쪽 클릭 이벤트를 등록합니다
 		// 선을 그리고있는 상태에서 마우스 오른쪽 클릭 이벤트가 발생하면 선 그리기를 종료합니다
 		kakao.maps.event.addListener(map, 'rightclick', function(mouseEvent) {
-			let deepArr = JSON.parse(JSON.stringify(arr));
-			arr.length=0;
-			console.log(deepArr);
+			/* let deepArr = JSON.parse(JSON.stringify(arr));
+			window.alert(typeof deepArr[0]); */
+			/* console.log(deepArr); */
 			// 지도 오른쪽 클릭 이벤트가 발생했는데 선을 그리고있는 상태이면
 			if (drawingFlag) {
 
@@ -338,6 +348,7 @@ img{
 				// 상태를 false로, 그리지 않고 있는 상태로 변경합니다
 				drawingFlag = false;
 			}
+		
 		});
 
 		// 클릭으로 그려진 선을 지도에서 제거하는 함수입니다
