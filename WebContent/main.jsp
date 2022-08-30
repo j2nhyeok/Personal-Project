@@ -111,20 +111,7 @@ img{
 }
 
 </style>
-<script type="text/javascript">
-	function openNav() {
-		document.getElementById("mySidenav").style.width = "250px";
-	}
-	function closeNav() {
-		document.getElementById("mySidenav").style.width = "0";
-	}
 
-	function makeRun() {
-		window.open("/make/makeRun.jsp", '',
-				'width=400, height=730, left=800px, top=100px');
-		return false;
-	}
-</script>
 
 <br>
 
@@ -136,6 +123,7 @@ img{
 		
 	</div>
 <input type="button" value="러닝 번개 만들기" id="makeBtn" onclick="makeRun()">
+<input type="button" value="새로고침" id="refreshBtn" onclick="refresh()">
 <div id="mySidenav" class="sidenav">
 
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -144,7 +132,9 @@ img{
 		|
 	</h2>
 	<a href="logout.do" onclick="window.close()">로그아웃</a>
+	
 	<!--  <a href="../MainMenu/UserChange.jsp">회원정보수정</a> -->
+	
 	<a href="changePwd.do" onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">비밀번호변경</a>
 	<a href="secession.do" onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">회원탈퇴</a>
 </div>
@@ -176,11 +166,17 @@ img{
 
 
 
+		
+			
+			
+			
 	<div id="wrapper">
 
 		<div class="map_wrap">
+			
 			<div id="map" style="width: 98%; height: 100%;"></div>
-
+			
+			
 			<script type="text/javascript"
 				src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08fa980140200e6f083039f1504a1fad"></script>
 			<script>
@@ -266,6 +262,37 @@ img{
 				// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
 				var zoomControl = new kakao.maps.ZoomControl();
 				map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+				
+				function openNav() {
+					document.getElementById("mySidenav").style.width = "250px";
+				}
+				function closeNav() {
+					document.getElementById("mySidenav").style.width = "0";
+				}
+			
+				function makeRun() {
+					window.open("makeRun.do", '',
+							'width=400, height=730, left=800px, top=100px');
+					return false;
+				}
+				
+				function refresh(){
+					// 마커가 표시될 위치입니다 
+					var markerPosition  = new kakao.maps.LatLng(33.450701, 126.570667); 
+
+					// 마커를 생성합니다
+					var marker = new kakao.maps.Marker({
+					    position: markerPosition
+					});
+
+					// 마커가 지도 위에 표시되도록 설정합니다
+					marker.setMap(map);
+
+					// 아래 코드는 지도 위의 마커를 제거하는 코드입니다
+					// marker.setMap(null);    
+				}
+				
+				
 			</script>
 </body>
 </html>

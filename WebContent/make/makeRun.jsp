@@ -1,6 +1,7 @@
 <%@ page language="java" contentType="text/html; charset=UTF-8"
 	pageEncoding="UTF-8"%>
 <%@page import="auth.service.User"%>
+<%@page import="java.time.LocalTime" %>
 <%
 	User user = (User) request.getSession().getAttribute("authUser");
 %>
@@ -146,18 +147,16 @@ img{
 	<form name="make"  id="makeform" >
 		<fieldset>
 		<legend>러닝 번개 생성하기</legend>
-	   	    번개장 : <%=user.getName() %> 
+	   	    번개장 : <%=user.getId() %> 
 	   	<br>
-   		    모집 인원 : <input type="number" id="lightMeet_capacity" name="lightMeet_capacity" placeholder="최소인원 2(명)" min="02" >명
+   		    모집 인원 : <input type="number" id="lightMeet_capacity" name="lightMeet_capacity" placeholder="최소인원 2(명)" min="02" value="" >명
    		<br>
-   		    모임 시간 : <select id = "lightMeet_Date" name="lightMeet_Date" style="width:60px; height:22px; font-size:12px; ">
-      			 	  <option value="오늘">오늘</option>
-      				  <option value="내일">내일</option>
-     			   </select>
+   		    모임 시간 : 
      			   <input type="time" id="whatTime" name="whatTime"/>
      			   
       			   <input type="hidden"  name="hour" id="lightMeet_hour" value="">
       			   <input type="hidden"  name="minute" id="lightMeet_minute" value="">
+      			   
       
    		<br>
    		  모집 성별 :  <select id = "lightMeet_gender" name="lightMeet_gender" style="width:70px; height:22px; font-size:12px; ">
@@ -173,7 +172,11 @@ img{
    		       나이 제한 :  <input type="number" id="lightMeet_startAge" name="lightMeet_startAge" placeholder="0" min="00" max="99" >세부터
    		  		      <input type="number" id="lightMeet_endAge" name="lightMeet_endAge" placeholder="99" min="00" max="99" >세까지		
 		    
-	
+		<br>
+					  <input type="hidden" id="lightMeet_latitude" name="lightMeet_latitude" value="">  <!-- 마커들의 위도 모음 -->
+					  <input type="hidden" id="lightMeet_longitude" name="lightMeet_longitude" value=""> <!-- 마커들의 경도 모음 -->
+					  <input type="hidden" id="lightMeet_startLat" name="lightMeet_startLat" value="">   <!-- 번개 모임 장소의 위도  -->
+					  <input type="hidden" id="lightMeet_startLong" name="lightMeet_startLong" value="">  <!-- 번개 모임 장소의 경도  -->
 			<input type="button" id="cancleBtn" value="취소하기" onclick="window.close()"> 
 			<input type="button" id="makeBtn" value="생성하기" onclick="makeFunc()"> 
 		</fieldset>
@@ -202,6 +205,7 @@ img{
 
 		// 지도에 클릭 이벤트를 등록합니다
 		// 지도를 클릭하면 선 그리기가 시작됩니다 그려진 선이 있으면 지우고 다시 그립니다
+		
 			let latitude = []; // 위도를 저장할 배열
 			let longitude = []; // 경도를 저장할 배열
 		kakao.maps.event.addListener(map, 'click', function(mouseEvent) {
@@ -546,7 +550,7 @@ img{
 			    map.panTo(moveLatLon);            
 			}
 		
-<!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->				
+<!--------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->				
 		//일반 지도와 스카이뷰로 지도 타입을 전환할 수 있는 지도타입 컨트롤을 생성합니다
 		var mapTypeControl = new kakao.maps.MapTypeControl();
 
@@ -561,14 +565,14 @@ img{
 <!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->						
 		
 		function makeFunc(){
-			var lightMeet_capacity =  parseInt($("#lightMeet_capacity").val());
+			var lightMeet_capacity = $("#lightMeet_capacity").val();
 			var whatTime =  $("#whatTime").val();
-			var lightMeet_km =  parseFloat($("#lightMeet_km").val());
-			var lightMeet_startAge =  parseInt($("#lightMeet_startAge").val());
-			var lightMeet_endAge =  parseInt($("#lightMeet_endAge").val());
+			var lightMeet_km =  $("#lightMeet_km").val();
+			var lightMeet_startAge = $("#lightMeet_startAge").val();
+			var lightMeet_endAge = $("#lightMeet_endAge").val();
 			
 			
-			if(lightMeet_capacity == "" || lightMeet_capacity < 2){
+			if(lightMeet_capacity == "" || parseInt(lightMeet_capacity) < 2){
 	    		   alert("모집인원을 다시 확인해주세요 (최소 2명 이상)");
 	    		   return;
 	    	}
@@ -583,23 +587,43 @@ img{
 	    		   return;
 	    	}
 			
-			if(lightMeet_startAge == "" || lightMeet_startAge < 0){
+			if(lightMeet_startAge == "" || parseInt(lightMeet_startAge) < 0){
 	    		   alert("참가 가능한 최소 나이를 다시 확인해주세요.");
 	    		   return;
 	    	}
 			
-			if(lightMeet_endAge == "" || lightMeet_endAge > 100 || lightMeet_endAge < lightMeet_startAge){
-					console.log(lightMeet_startAge);
-					console.log(lightMeet_endAge);
+			if(lightMeet_endAge == "" || parseInt(lightMeet_endAge) > 100 || parseInt(lightMeet_endAge) < parseInt(lightMeet_startAge)){
 	    		   alert("참가 가능한 최대 나이를 다시 확인해주세요.");
 	    		   return;
 	    	}
 			
+			//밑에 두 줄 코드는 모임 장소의 위도와 경도를 저장함.
+			document.make.lightMeet_startLat.value = latitude[0];
+			document.make.lightMeet_startLong.value = longitude[0];
 			
+			const JsonLatitude = JSON.stringify(latitude);
+			const JsonLongitude = JSON.stringify(longitude);
+			
+			document.make.lightMeet_latitude.value = JsonLatitude;
+			document.make.lightMeet_longitude.value = JsonLongitude;
 			
 			document.make.hour.value = $("#whatTime").val().slice(0, 2);
 			document.make.minute.value = $("#whatTime").val().slice(3);
-			window.open("makeRunCheck.jsp", "_blank", "width=500, height=250, left=800, top=200");
+			
+			// 현재 시간과 모임 시간을 비교하여, 모임 시간이 현재 시간 이전일 경우 alert() 실행
+			let today = new Date();   
+			
+			let currentTransMinute = today.getHours() * 60 + today.getMinutes(); // 시
+			let inputTransMinute = parseInt($("#whatTime").val().slice(0, 2)) * 60 + parseInt($("#whatTime").val().slice(3));
+			
+			if(inputTransMinute <= currentTransMinute){
+				alert("모임 시간이 현재 시간보다 이전이거나 같습니다.");
+				return;
+				
+			}
+			
+					
+			window.open("/make/makeRunCheck.jsp", "_blank", "width=500, height=250, left=800, top=200");
 		}
 	</script>
 <!---------------------------일반 뷰 , 스카이뷰 토글--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- -->
