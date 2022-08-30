@@ -30,9 +30,6 @@ public class JoinHandler implements CommandHandler {
 
 	private String processSubmit(HttpServletRequest req, HttpServletResponse res) {
 		//db�뿉 �꽔�뼱�빞 �븯�뒗 �옉�뾽�쓣 �뿬湲곗꽌 �빐�빞 �븿.
-		System.out.println(req.getParameter("year"));
-		System.out.println(req.getParameter("month"));
-		System.out.println(req.getParameter("date"));
 		
 		// �엯�젰�맂 ���샃瑜� joinReq濡� �삷源�.
 		JoinRequest joinReq = new JoinRequest();
