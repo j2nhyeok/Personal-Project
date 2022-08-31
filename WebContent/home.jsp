@@ -4,7 +4,7 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Insert title here</title>
+<title>with run</title>
 <script language="javascript">
 function joinPopup() { window.open("join.do", "join", "width=500, height=650, left=800, top=200"); }
 function loginPopup() { window.open("login.do", "login", "width=400, height=150, left=800, top=350"); }
