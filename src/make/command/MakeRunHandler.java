@@ -5,13 +5,11 @@ import javax.servlet.http.HttpServletResponse;
 import auth.service.User;
 import make.service.MakeRequest;
 import make.service.MakeRunService;
-import member.service.JoinRequest;
-//import make.service.MakeRunService;
 import mvc.command.CommandHandler;
 
 
 public class MakeRunHandler implements CommandHandler{
-	private static final String FORM_VIEW = "make/makeRun.jsp";
+	private static final String FORM_VIEW = "lightmeet/makeRun.jsp";
 	private MakeRunService makeRunSvc = new MakeRunService();
 	
 	@Override
@@ -20,7 +18,6 @@ public class MakeRunHandler implements CommandHandler{
 		if (req.getMethod().equalsIgnoreCase("GET")) {
 			return processForm(req, res);
 		} else if (req.getMethod().equalsIgnoreCase("POST")) {
-			System.out.println("gds");
 			return processSubmit(req, res);
 		} else {
 			res.sendError(HttpServletResponse.SC_METHOD_NOT_ALLOWED);
@@ -52,8 +49,10 @@ public class MakeRunHandler implements CommandHandler{
 		makeReq.setStartLat(req.getParameter("lightMeet_startLat"));
 		makeReq.setStartLong(req.getParameter("lightMeet_startLong"));
 	
-		
-		makeRunSvc.make(makeReq);
-		return "/make/makeLightMeetSuccess.jsp";
+	
+		int result = makeRunSvc.make(makeReq);
+		if(result == 1)	return "/lightmeet/makeLightMeetSuccess.jsp";
+		else return "/lightmeet/makeLightMeetFail.jsp";
+	
 	}
 }
