@@ -34,6 +34,31 @@ public class LightMeetDao {
 			JdbcUtil.close(pstmt);
 		}
 	}
+	
+	public List<Integer> selectId(Connection conn) throws SQLException{
+		Statement stmt = null;
+		ResultSet rs = null;
+		List<Integer> id = new ArrayList<Integer>();
+		
+
+		try {
+			stmt = conn.createStatement();
+			String sql = "SELECT lightMeet_id from lightmeet";
+
+			rs = stmt.executeQuery(sql);
+
+			while (rs.next()) {
+
+			id.add(rs.getInt(("lightMeet_id")));
+		
+			}
+			return id;
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(stmt);
+		}
+		
+	}
 
 	public List<Double> selectStartLat(Connection conn) throws SQLException {
 	

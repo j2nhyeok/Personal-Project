@@ -34,10 +34,12 @@ public class refreshServlet extends HttpServlet {
 		Connection conn = null;
 		List<Double> startLats = new ArrayList<Double>();
 		List<Double> startLongs = new ArrayList<Double>();
+		List<Integer> id = new ArrayList<Integer>();
 		try {
 			conn = ConnectionProvider.getConnection();
 			startLats = lightmeetDao.selectStartLat(conn);
 			startLongs = lightmeetDao.selectStartLong(conn);
+			id = lightmeetDao.selectId(conn);
 		} catch (Exception e) {	
 			e.getStackTrace();
 		} finally {
@@ -47,6 +49,7 @@ public class refreshServlet extends HttpServlet {
 		JSONObject jobj = new JSONObject();
 		jobj.put("Latslist", startLats);
 		jobj.put("Longslist", startLongs);
+		jobj.put("idlist", id);
 
 		resp.setContentType("application/x-json; charset=utf-8");
 		resp.getWriter().print(jobj); // 전송이 되는 부분
