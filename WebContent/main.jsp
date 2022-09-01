@@ -296,10 +296,12 @@ menu</span1> </body1>
 
 									let latitude = [];
 									let longitude = [];
+									let id = [];
 
 									latitude = data.Latslist;
 									longitude = data.Longslist;
-
+									id = data.idlist;
+									
 									for (var i = 0; i < latitude.length; i++) {
 
 										var markerPosition = new kakao.maps.LatLng(
@@ -310,9 +312,12 @@ menu</span1> </body1>
 											position : markerPosition,
 											clickable : true
 										// 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+											
 
 										});
-
+										
+										var me
+										
 										markers.push(marker);
 										// 마커가 지도 위에 표시되도록 설정합니다
 										marker.setMap(map);
@@ -320,20 +325,18 @@ menu</span1> </body1>
 								
 										// 인포윈도우를 생성합니다
 									
-										
+										kakao.maps.event.addListener(markers[i], 'click', function(){
+										    var position = this.getPosition();
+										    window.open('register.jsp', '_blank', "width=500, height=650, left=800, top=200");
+										});
 
 									}
 									
-									for (var i = 0; i < markers.length; i++) {
-								
-										kakao.maps.event.addListener(markers[i], 'click', function(){
-										    var position = this.getPosition();
-										    window.open('home.jsp', '_blank', "width=500, height=650, left=800, top=200");
-										});
-									}
 									
-								
 									
+										
+										
+								
 										
 								},
 								error : function(request, status, error) { // 결과 에러 콜백함수
@@ -342,6 +345,10 @@ menu</span1> </body1>
 							})
 
 				}
+				
+		
+				
+				
 			</script>
 </body>
 </html>
