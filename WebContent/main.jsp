@@ -121,6 +121,8 @@ img {
 	<!-------------------------------------------------------------------------------------------------------------------------------->
 
 </div>
+<input type="hidden" value="" id="clickRunId">
+
 <input type="button" value="러닝 번개 만들기" id="makeBtn" onclick="makeRun()">
 <input type="button" value="새로고침" id="refreshBtn" onclick="refresh()">
 <div id="mySidenav" class="sidenav">
@@ -162,12 +164,6 @@ menu</span1> </body1>
 </head>
 <body onresize="parent.resizeTo(1536, 852)"
 	onload="parent.resizeTo(1536, 852)">
-
-
-
-
-
-
 
 	<div id="wrapper">
 
@@ -296,7 +292,6 @@ menu</span1> </body1>
 
 									let latitude = [];
 									let longitude = [];
-									let id = [];
 
 									latitude = data.Latslist;
 									longitude = data.Longslist;
@@ -310,33 +305,24 @@ menu</span1> </body1>
 										// 마커를 생성합니다
 										var marker = new kakao.maps.Marker({
 											position : markerPosition,
-											clickable : true
+											clickable : true,
 										// 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
-											
-
+											title : id[i]
 										});
-										
-										var me
 										
 										markers.push(marker);
 										// 마커가 지도 위에 표시되도록 설정합니다
 										marker.setMap(map);
-
-								
+						
+							
 										// 인포윈도우를 생성합니다
-									
-										kakao.maps.event.addListener(markers[i], 'click', function(){
-										    var position = this.getPosition();
-										    window.open('register.jsp', '_blank', "width=500, height=650, left=800, top=200");
+										kakao.maps.event.addListener(marker, 'click', function(){
+											document.getElementById("clickRunId").value = String(this.getTitle());
+										  openWin =  window.open('register.jsp', '_blank', "width=500, height=650, left=800, top=200");
 										});
 
 									}
 									
-									
-									
-										
-										
-								
 										
 								},
 								error : function(request, status, error) { // 결과 에러 콜백함수
