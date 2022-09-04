@@ -9,7 +9,6 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
-
 import jdbc.JdbcUtil;
 import make.model.LightMeet;
 
@@ -17,6 +16,7 @@ public class LightMeetDao {
 	public LightMeetDao() {
 	}
 
+	// id 중복 체크 메서드
 	public boolean selectById(Connection conn, String userId) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -34,12 +34,11 @@ public class LightMeetDao {
 			JdbcUtil.close(pstmt);
 		}
 	}
-	
-	public List<Integer> selectId(Connection conn) throws SQLException{
+
+	public List<Integer> selectId(Connection conn) throws SQLException {
 		Statement stmt = null;
 		ResultSet rs = null;
 		List<Integer> id = new ArrayList<Integer>();
-		
 
 		try {
 			stmt = conn.createStatement();
@@ -49,23 +48,22 @@ public class LightMeetDao {
 
 			while (rs.next()) {
 
-			id.add(rs.getInt(("lightMeet_id")));
-		
+				id.add(rs.getInt(("lightMeet_id")));
+
 			}
 			return id;
 		} finally {
 			JdbcUtil.close(rs);
 			JdbcUtil.close(stmt);
 		}
-		
+
 	}
 
 	public List<Double> selectStartLat(Connection conn) throws SQLException {
-	
+
 		Statement stmt = null;
 		ResultSet rs = null;
 		List<Double> startLats = new ArrayList<Double>();
-	
 
 		try {
 			stmt = conn.createStatement();
@@ -75,8 +73,8 @@ public class LightMeetDao {
 
 			while (rs.next()) {
 
-			startLats.add(rs.getDouble(("lightMeet_startLat")));
-		
+				startLats.add(rs.getDouble(("lightMeet_startLat")));
+
 			}
 			return startLats;
 		} finally {
@@ -84,13 +82,12 @@ public class LightMeetDao {
 			JdbcUtil.close(stmt);
 		}
 	}
-	
+
 	public List<Double> selectStartLong(Connection conn) throws SQLException {
-		
+
 		Statement stmt = null;
 		ResultSet rs = null;
 		List<Double> startLongs = new ArrayList<Double>();
-	
 
 		try {
 			stmt = conn.createStatement();
@@ -101,7 +98,7 @@ public class LightMeetDao {
 			while (rs.next()) {
 
 				startLongs.add(rs.getDouble(("lightMeet_startLong")));
-		
+
 			}
 			return startLongs;
 		} finally {
@@ -109,9 +106,8 @@ public class LightMeetDao {
 			JdbcUtil.close(stmt);
 		}
 	}
-	
 
-	// 신규 러닝 번개 그룹 추가
+	// 러닝 번개 추가하는 메서드
 	public void insert(Connection conn, LightMeet meet) throws SQLException {
 		PreparedStatement pstmt = null;
 
@@ -140,4 +136,39 @@ public class LightMeetDao {
 		}
 	}
 
+	// 해당 하는 id의 모든 정보를 알려주는 메서드
+	public List<Object> showInfo(Connection conn, int lightMeet_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		List<Object> informations = new ArrayList<Object>();
+
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM lightmeet where lightMeet_id = ?");
+
+			pstmt.setInt(1, lightMeet_id);
+			rs = pstmt.executeQuery();
+
+			while (rs.next()) {
+				informations.add(rs.getInt("lightMeet_id"));
+				informations.add(rs.getString("lightMeet_leader"));
+				informations.add(rs.getInt("lightMeet_participant"));
+				informations.add(rs.getInt("lightMeet_capacity"));
+				informations.add(rs.getInt("lightMeet_hour"));
+				informations.add(rs.getInt("lightMeet_minute"));
+				informations.add(rs.getString("lightMeet_gender"));
+				informations.add(rs.getInt("lightMeet_km"));
+				informations.add(rs.getInt("lightMeet_startAge"));
+				informations.add(rs.getInt("lightMeet_endAge"));
+				informations.add(rs.getObject("lightMeet_latitude"));
+				informations.add(rs.getObject("lightMeet_longitude"));
+				informations.add(rs.getString("lightMeet_member"));
+
+			}
+			return informations;
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
+
+	}
 }
