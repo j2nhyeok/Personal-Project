@@ -20,7 +20,7 @@
 <head>
 <title>Place Information UI</title>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-
+<script src="https://code.jquery.com/jquery-3.4.1.js"></script>
 
 <style>
 body {
@@ -91,51 +91,40 @@ span1 {
 	padding-right: 20px;
 }
 
-.currentXY{
-
-position:absolute;
-  top:130;
-  left:540;
-  z-index:10;
+.currentXY {
+	position: absolute;
+	top: 130;
+	left: 540;
+	z-index: 10;
 }
 
-.currentXYBtn{
-position:absolute;
-
-  top:130;
-  left:620;
+.currentXYBtn {
+	position: absolute;
+	top: 130;
+	left: 620;
 }
 
-img{
+img {
 	width: 30px;
 }
-
 </style>
-<script type="text/javascript">
-	function openNav() {
-		document.getElementById("mySidenav").style.width = "250px";
-	}
-	function closeNav() {
-		document.getElementById("mySidenav").style.width = "0";
-	}
 
-	function makeRun() {
-		window.open("/make/makeRun.jsp", '',
-				'width=400, height=730, left=800px, top=100px');
-		return false;
-	}
-</script>
 
 <br>
 
-<body1 class="choice"> 
+<body1 class="choice">
 
-	<div class="currentXY"> 
-	<button type="button" class="currentXYBtn" onclick="panTo()"><img src="../../images/currentXY.png" alt=""></button>
-<!-------------------------------------------------------------------------------------------------------------------------------->		
-		
-	</div>
+<div class="currentXY">
+	<button type="button" class="currentXYBtn" onclick="panTo()">
+		<img src="../../images/currentXY.png" alt="">
+	</button>
+	<!-------------------------------------------------------------------------------------------------------------------------------->
+
+</div>
+<input type="hidden" value="" id="clickRunId">
+
 <input type="button" value="러닝 번개 만들기" id="makeBtn" onclick="makeRun()">
+<input type="button" value="새로고침" id="refreshBtn" onclick="refresh()">
 <div id="mySidenav" class="sidenav">
 
 	<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
@@ -143,12 +132,14 @@ img{
 		<%=user.getName()%>
 		|
 	</h2>
-	<a href="logout.do" onclick="window.close()">로그아웃</a>
-	<!--  <a href="../MainMenu/UserChange.jsp">회원정보수정</a> -->
-	<a href="changePwd.do" onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">비밀번호변경</a>
-	<a href="secession.do" onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">회원탈퇴</a>
+	<a href="logout.do" onclick="window.close()">로그아웃</a> <a
+		href="changePwd.do"
+		onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">비밀번호변경</a>
+	<a href="secession.do"
+		onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">회원탈퇴</a>
 </div>
-<span1 style="font-size:20px;cursor:pointer" onclick="openNav()">&#9776; menu</span1> </body1>
+<span1 style="font-size:20px;cursor:pointer" onclick="openNav()">&#9776;
+menu</span1> </body1>
 <br>
 <br>
 <span id="menu"><span class="ion-navicon-round">
@@ -174,12 +165,12 @@ img{
 <body onresize="parent.resizeTo(1536, 852)"
 	onload="parent.resizeTo(1536, 852)">
 
-
-
 	<div id="wrapper">
 
 		<div class="map_wrap">
+
 			<div id="map" style="width: 98%; height: 100%;"></div>
+
 
 			<script type="text/javascript"
 				src="//dapi.kakao.com/v2/maps/sdk.js?appkey=08fa980140200e6f083039f1504a1fad"></script>
@@ -266,6 +257,93 @@ img{
 				// 지도 확대 축소를 제어할 수 있는  줌 컨트롤을 생성합니다
 				var zoomControl = new kakao.maps.ZoomControl();
 				map.addControl(zoomControl, kakao.maps.ControlPosition.RIGHT);
+
+				function openNav() {
+					document.getElementById("mySidenav").style.width = "250px";
+				}
+				function closeNav() {
+					document.getElementById("mySidenav").style.width = "0";
+				}
+
+				function makeRun() {
+					window.open("makeRun.do", '',
+							'width=400, height=730, left=800px, top=100px');
+					return false;
+				}
+
+				let markers = [];
+				function refresh() {
+					for (var i = 0; i < markers.length; i++) {
+						markers[i].setMap(null);
+					}
+
+					markers.length=0; 
+							$.ajax({
+								type : 'get', // 타입 (get, post, put 등등)
+								url : 'refresh.do', // 요청할 서버url
+								async : true, // 비동기화 여부 (default : true)
+								headers : { // Http header
+									"Content-Type" : "application/json",
+									"X-HTTP-Method-Override" : "GET"
+								},
+								dataType : 'json', // 데이터 타입 (html, xml, json, text 등등)
+
+								success : function(data) { // 결과 성공 콜백함수
+
+									let latitude = [];
+									let longitude = [];
+
+									latitude = data.Latslist;
+									longitude = data.Longslist;
+									id = data.idlist;
+									
+									for (var i = 0; i < latitude.length; i++) {
+
+										var markerPosition = new kakao.maps.LatLng(
+												latitude[i], longitude[i]);
+
+										// 마커를 생성합니다
+										var marker = new kakao.maps.Marker({
+											position : markerPosition,
+											clickable : true,
+										// 마커를 클릭했을 때 지도의 클릭 이벤트가 발생하지 않도록 설정합니다
+											title : id[i]
+										});
+										
+										markers.push(marker);
+										// 마커가 지도 위에 표시되도록 설정합니다
+										marker.setMap(map);
+						
+							
+										// 인포윈도우를 생성합니다
+										kakao.maps.event.addListener(marker, 'click', function(){
+											document.getElementById("clickRunId").value = String(this.getTitle());
+										  openWin =  window.open('register.jsp', '_blank', "width=500, height=650, left=800, top=200");
+										});
+
+									}
+									
+										
+								},
+								error : function(request, status, error) { // 결과 에러 콜백함수
+									alert("생성된 번개가 없어요.")
+								}
+							})
+
+				}
+				
+		
+				
+				
 			</script>
 </body>
 </html>
+
+
+
+
+
+
+
+
+
