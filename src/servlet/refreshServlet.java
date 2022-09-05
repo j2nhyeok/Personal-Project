@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import jdbc.JdbcUtil;
 import jdbc.connection.ConnectionProvider;
-import make.dao.LightMeetDao;
+import lightmeet.dao.LightMeetDao;
 
 
 @WebServlet("/refresh.do")
@@ -52,7 +52,7 @@ public class refreshServlet extends HttpServlet {
 		jobj.put("idlist", id);
 
 		resp.setContentType("application/x-json; charset=utf-8");
-		resp.getWriter().print(jobj); // ? „?†¡?´ ?˜?Š” ë¶?ë¶?
+		resp.getWriter().print(jobj); // ?ï¿½ï¿½?ï¿½ï¿½?ï¿½ï¿½ ?ï¿½ï¿½?ï¿½ï¿½ ï¿½?ï¿½?
 	}
 
 }

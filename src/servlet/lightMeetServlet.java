@@ -15,7 +15,7 @@ import org.json.JSONObject;
 
 import jdbc.JdbcUtil;
 import jdbc.connection.ConnectionProvider;
-import make.dao.LightMeetDao;
+import lightmeet.dao.LightMeetDao;
 
 @WebServlet("/lightmeet.do")
 public class lightMeetServlet extends HttpServlet {
