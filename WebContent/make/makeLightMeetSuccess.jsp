@@ -25,9 +25,10 @@ resizeTo(450,180)
 </head>
 <body>
 	<fieldset>
+	          
 			<legend>러닝 번개  생성 완료</legend>
 	정상적으로 러닝 번개를 생성하였습니다. <br>
-	
+	 
 	<input type="button" value="창닫기 " onclick="allClose()"/>
 	</fieldset>
 	
