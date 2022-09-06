@@ -31,7 +31,7 @@ resizeTo(500, 650)
 <!-- 지도를 표시할 div 입니다 -->
 <div id="map" style="width:100%;height:350px;"></div>
 <div id="info">
-	<form name="attend" action="attend.do" method="post"  id="attendform">
+	<form action="attend.do" name="attend"  method="post"  id="attendform">
 		<fieldset>
 				<legend>러닝 번개 생성하기</legend>
 					 번개장 : <input type="text" name="lightMeet_leader" readonly style="width:100px"> <br>
@@ -43,8 +43,8 @@ resizeTo(500, 650)
 					 나이 제한 : <input type="text" name="lightMeet_startAge" readonly>세 부터 <input type="text" name="lightMeet_endAge" readonly  >세 까지 <br>  
 					
 					<input type="button"  value="취소" onclick="window.close()" style="width:50px; height:20px" >
-					<input type="submit"  value="참가 " style="width:50px; height:20px">
-					<input type="hidden" value="클릭한 러닝 번개 id" name="lightMeet_id">
+					<input type="submit"  value="참가 "  style="width:50px; height:20px">
+					<input type="hidden" value="클릭한 러닝 번개 id" id="lightMeet_id" name="lightMeet_id">
 		</fieldset>
 	</form>
 </div>
@@ -70,6 +70,8 @@ resizeTo(500, 650)
 			   
 			   informations = data.informations;
 			   console.log(informations);
+			   console.log(informations[10]);
+			   
 			   informations[10] = informations[10].replace("[", "");
 			   informations[10] = informations[10].replace("]", "");
 			   
@@ -155,7 +157,7 @@ resizeTo(500, 650)
 			    image: arriveImage // 도착 마커이미지를 설정합니다
 			});
 			
-			document.attend.lightMeet_id.value = informations[0];
+		
 			document.attend.lightMeet_leader.value = informations[1];
 			document.attend.lightMeet_participant.value = informations[2];
 			document.attend.lightMeet_capacity.value = informations[3];

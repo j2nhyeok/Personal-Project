@@ -132,8 +132,8 @@ img {
 		<%=user.getName()%>
 		|
 	</h2>
-	<a href="logout.do" onclick="window.close()">로그아웃</a> <a
-		href="changePwd.do"
+	<a href="logout.do" onclick="window.close()">로그아웃</a>
+	 <a href="changePwd.do"
 		onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">비밀번호변경</a>
 	<a href="secession.do"
 		onclick="window.open(this.href, '', 'width=400, height=730, left=800px, top=100px'); return false;">회원탈퇴</a>
