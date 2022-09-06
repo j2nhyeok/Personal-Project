@@ -318,7 +318,7 @@ menu</span1> </body1>
 										// 인포윈도우를 생성합니다
 										kakao.maps.event.addListener(marker, 'click', function(){
 											document.getElementById("clickRunId").value = String(this.getTitle());
-										  openWin =  window.open('register.jsp', '_blank', "width=500, height=650, left=800, top=200");
+										  openWin =  window.open('attend.jsp', '_blank', "width=500, height=650, left=800, top=200");
 										});
 
 									}
