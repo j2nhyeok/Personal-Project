@@ -36,8 +36,7 @@ public class lightMeetServlet extends HttpServlet {
 			conn = ConnectionProvider.getConnection();
 			informations = lightmeetDao.showInfo(conn, Integer.parseInt(req.getParameter("lightMeet_id")));
 			
-			for(int i = 0; i < informations.size(); i++) {
-			}
+		
 		} catch (Exception e) {	
 			e.getStackTrace();
 		} finally {

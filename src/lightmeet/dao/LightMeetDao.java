@@ -16,18 +16,18 @@ public class LightMeetDao {
 	public LightMeetDao() {
 	}
 
-	// id 중복 체크 메서드
-	public boolean selectById(Connection conn, String userId) throws SQLException {
+	public Integer selectById(Connection conn, String userId) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		boolean x = false;
 		try {
-			pstmt = conn.prepareStatement("select * from lightmeet where lightmeet_leader = ?");
+			pstmt = conn.prepareStatement("select lightMeet_id from lightmeet where lightmeet_leader = ?");
 
 			pstmt.setString(1, userId);
 			rs = pstmt.executeQuery();
+			
+			int x = 0;
 			if (rs.next())
-				x = true;
+				x = rs.getInt("lightMeet_id");
 			return x;
 		} finally {
 			JdbcUtil.close(rs);
@@ -107,7 +107,7 @@ public class LightMeetDao {
 		}
 	}
 
-	// 러닝 번개 추가하는 메서드
+	// �윭�떇 踰덇컻 異붽��븯�뒗 硫붿꽌�뱶
 	public void insert(Connection conn, LightMeet meet) throws SQLException {
 		PreparedStatement pstmt = null;
 
@@ -136,7 +136,6 @@ public class LightMeetDao {
 		}
 	}
 
-	// 해당 하는 id의 모든 정보를 알려주는 메서드
 	public List<Object> showInfo(Connection conn, int lightMeet_id) throws SQLException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
@@ -169,6 +168,27 @@ public class LightMeetDao {
 			JdbcUtil.close(rs);
 			JdbcUtil.close(pstmt);
 		}
+	}
+	
+	// 해당 하는 id를 가진 러닝 번개가 있는지 확인.(참여가 가능한 상태의 러닝 번개인지)
+	public boolean preORabs(Connection conn, int lightMeet_id) throws SQLException {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 
+		try {
+			pstmt = conn.prepareStatement("SELECT * FROM lightmeet where lightMeet_id = ?");
+
+			pstmt.setInt(1, lightMeet_id);
+			rs = pstmt.executeQuery();
+
+			boolean can = false;
+			
+			if(rs.next()) can = true;
+			
+			return can;
+		} finally {
+			JdbcUtil.close(rs);
+			JdbcUtil.close(pstmt);
+		}
 	}
 }

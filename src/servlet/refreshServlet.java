@@ -52,7 +52,7 @@ public class refreshServlet extends HttpServlet {
 		jobj.put("idlist", id);
 
 		resp.setContentType("application/x-json; charset=utf-8");
-		resp.getWriter().print(jobj); // ?��?��?�� ?��?�� �?�?
+		resp.getWriter().print(jobj);
 	}
 
 }

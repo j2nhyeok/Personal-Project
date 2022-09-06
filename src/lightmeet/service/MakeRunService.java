@@ -5,20 +5,21 @@ import java.sql.Connection;
 import jdbc.JdbcUtil;
 import jdbc.connection.ConnectionProvider;
 import lightmeet.dao.LightMeetDao;
+import lightmeet.dao.LightMeetMemberDao;
 import lightmeet.model.LightMeet;
 
 public class MakeRunService {
 	private LightMeetDao lightmeetDao = new LightMeetDao();
-
+	private LightMeetMemberDao lightmeetmemberDao = new LightMeetMemberDao();
 	public int make(MakeRequest makeReq) {
 		Connection conn = null;
 		try {
 			conn = ConnectionProvider.getConnection();
 			conn.setAutoCommit(false);
 			
-			boolean isitDuple = lightmeetDao.selectById(conn, makeReq.getLeader());
+			int isitDuple = lightmeetDao.selectById(conn, makeReq.getLeader());
 			
-			if(!isitDuple) {
+			if(isitDuple == 0) {     
 				lightmeetDao.insert(conn,
 						new LightMeet(
 								makeReq.getLeader(),
@@ -35,7 +36,15 @@ public class MakeRunService {
 								makeReq.getStartLong()
 								)
 						);
+			
+				int completeId = lightmeetDao.selectById(conn, makeReq.getLeader()); //completeId는 막 생성된 러닝 번개의 id
+				lightmeetmemberDao.insert(conn, makeReq.getLeader(), completeId);
+				
+				
+				
 				conn.commit();
+				
+				
 				return 1;
 			}else { 
 				JdbcUtil.rollback(conn);
